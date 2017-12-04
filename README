@@ -1,0 +1,12 @@
+Shell Packer
+============
+
+###### A script to combine multiple shell files into a single script.
+
+# Usage:
+```
+ENTRYPOINTS='executablename=entrypountfunc' \
+LICENSE=LICENSE \
+SRCDIRS='src/' \
+./shell-script-builder
+```
