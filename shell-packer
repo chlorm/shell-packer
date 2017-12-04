@@ -71,6 +71,7 @@ build_functions() {
   local -r file="$1"
   local srcfile
   local -a srcfiles
+  local -a srcfileslist=()
   local srcdir
   local -a srcdirs
 
@@ -82,10 +83,11 @@ build_functions() {
       return 1
     fi
     mapfile -t srcfiles < <(recurse_files "$srcdir")
+    srcfileslist+=("${srcfiles[@]}")
   done
 
   echo "> adding functions" >&2
-  for srcfile in "${srcfiles[@]}"; do
+  for srcfile in "${srcfileslist[@]}"; do
     echo "  $srcfile" >&2
     bash -c "
     $(<$srcfile)
