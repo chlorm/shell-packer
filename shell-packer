@@ -126,7 +126,7 @@ build_entry_points() {
     build_functions "${kv[0]}" "$srcdirs"
     printf '\n' >> "${kv[0]}"
     if [ "${kv[1]}" != 'null' ]; then
-      printf '%s\n' "${kv[1]}" >> "${kv[0]}"
+      printf '%s "$@"\n' "${kv[1]}" >> "${kv[0]}"
     fi
     printf '\n' >&2
   done
