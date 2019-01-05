@@ -5,7 +5,7 @@ Shell Packer
 
 # Usage:
 ```
-ENTRYPOINTS='executablename=entrypountfunc' \
+ENTRYPOINTS='executable-name=entry_point_func' \
 LICENSE=LICENSE \
 SRCDIRS='src/' \
 ./shell-script-builder
