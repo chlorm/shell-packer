@@ -90,6 +90,7 @@ build_functions() {
   for srcfile in "${srcfileslist[@]}"; do
     echo "  $srcfile" >&2
     bash -c "
+    unset clearLmod clearMT ml module xSetTitleLmod
     $(<$srcfile)
     declare -f
     " >> "$file"
