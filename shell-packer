@@ -74,6 +74,8 @@ build_functions() {
   local -a srcfileslist=()
   local srcdir
   local -a srcdirs
+  local -a loadedfuncs=()
+  local -a loadedfuncnames=()
 
   mapfile -t -d, srcdirs < <(printf '%s' "$dirs")
 
@@ -86,11 +88,20 @@ build_functions() {
     srcfileslist+=("${srcfiles[@]}")
   done
 
+  # Find all function preloaded in bash
+  mapfile -t loadedfuncs < <(bash -c 'declare -F')
+  local -a t=()
+  for i in "${loadedfuncs[@]}"; do
+    mapfile -t -d" " t < <(printf '%s' "$i")
+    loadedfuncnames+=("${t[2]}")
+  done
+
   echo "> adding functions" >&2
   for srcfile in "${srcfileslist[@]}"; do
     echo "  $srcfile" >&2
     bash -c "
-    unset clearLmod clearMT ml module xSetTitleLmod
+    # Unset any preloaded functions
+    $(for i in ${loadedfuncnames[@]}; do printf '%s\n' "unset $i"; done)
     $(<$srcfile)
     declare -f
     " >> "$file"
