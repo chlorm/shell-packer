@@ -110,7 +110,7 @@ build_functions() {
 
 build_entry_points() {
   local entrypoint
-  local -a entrypointslist
+  local -a entrypointslist=()
   local -r entrypoints="$2"
   local kv
   local -r srcdirs="$1"
