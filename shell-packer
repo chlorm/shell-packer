@@ -101,8 +101,8 @@ build_functions() {
     echo "  $srcfile" >&2
     bash -c "
     # Unset any preloaded functions
-    $(for i in ${loadedfuncnames[@]}; do printf '%s\n' "unset $i"; done)
-    $(<$srcfile)
+    $(for i in "${loadedfuncnames[@]}"; do printf '%s\n' "unset $i"; done)
+    $(<"$srcfile")
     declare -f
     " >> "$file"
   done
