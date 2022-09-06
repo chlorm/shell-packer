@@ -154,6 +154,86 @@ build_entry_points() {
   done
 }
 
+# TODO: provide utility to re-set hardcoded runtime path in generated files.
+sp_requires_runtime() {
+    local -a optionalcommands=()
+    local -a optionalcommandsfiles=()
+    local -a requiredcommands=()
+    local -a requiredcommandsfiles=()
+
+    # Fix all requirements.txt files
+
+    # Parse requirements.txt files
+
+    # Return formatted list
+
+    mapfile -t optionalcommands
+
+    local -a REQUIRED_UTILS=(
+        awk
+        basename
+        cat
+        dirname
+        find
+        getconf
+        grep
+        id
+        install
+        ln
+        mkdir
+        mktemp
+        readlink
+        rm
+        sed
+        sleep
+        sort
+        touch
+        tr
+        uniq
+        unlink
+    )
+
+    declare -a OPTIONAL_UTILS=(
+        uname
+    )
+
+    # FIXME: Script might be intended to run everywhere, this assumes a single
+    #        platform
+    case "$(uname -s)" in
+    'Darwin')
+        REQUIRED_UTILS+=(sysctl)
+        ;;
+    'Linux')
+        OPTIONAL_UTILS+=(lsb_release)
+        ;;
+    esac
+
+    declare -a LIBBASH_PATHS=()
+    for requiredutil in "${REQUIRED_UTILS[@]}"; do
+        if ! type $requiredutil >/dev/null; then
+            echo "$requiredutil not found" >&2
+            exit 1
+        fi
+        LIBBASH_PATHS+=("$(dirname "$(type -P "$requiredutil")")")
+    done
+
+    for optionalutil in "${OPTIONAL_UTILS[@]}"; do
+        if type $optionalutil >/dev/null; then
+            LIBBASH_PATHS+=("$(dirname "$(type -P "$optionalutil")")")
+        fi
+    done
+
+    # Filter out duplicate prefixes
+    mapfile -t LIBBASH_PATHS_FILTERED < <(
+        printf '%s\n' "${LIBBASH_PATHS[@]}" | sort -u
+    )
+
+    unset LIBBASH_PATH
+    for Path in "${LIBBASH_PATHS_FILTERED[@]}"; do
+        LIBBASH_PATH+="${LIBBASH_PATH:+:}$Path"
+    done
+}
+
 # String containing a comma separated list of directories.
 declare -r SRCDIRS="${SRCDIRS:-src/}"
 declare -r LICENSE="${LICENSE:-}"
